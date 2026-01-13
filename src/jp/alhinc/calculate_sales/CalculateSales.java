@@ -68,6 +68,11 @@ public class CalculateSales {
 			// 一行ずつ読み込む
 			while((line = br.readLine()) != null) {
 				// ※ここの読み込み処理を変更してください。(処理内容1-2)
+				String[] items = line.split(",");
+
+				//Mapに追加する２つの情報を、putの引数として指定します。
+				branchNames.put("支店コード","支店名");
+				branchSales.put("支店コード",(long)0);
 				System.out.println(line);
 			}
 
