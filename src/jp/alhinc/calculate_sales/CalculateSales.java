@@ -42,25 +42,34 @@ public class CalculateSales {
 
 		//listFilesを使⽤してfilesという配列に、
 		//指定したパスに存在する全てのファイル(または、ディレクトリ)の情報を格納します
-		File[] files = new File("C/Users/trainee1295/Desktop/売上集計システム_課題").listFiles();
-
+		File[] files = new File(args[0]).listFiles();
 		//先にファイルの情報を格納する List(ArrayList) を宣言します。
 		List<File> rcdFiles = new ArrayList<>();
 
 		//filesの数だけ繰り返すことで、
 		//指定したパスに存在する全てのファイル(または、ディレクトリ)の数だけ繰り返されます。
-		if (files != null) {
 		for(int i = 0; i < files.length ; i++) {
-			//files[i].getName() でファイル名を取得できます。
-			files[i].getName();
+			//files[i].getName() でファイル名を取得,変数に代入してあげる事で、次の行で使える材料になる。
+			String fileName = files[i].getName();
 
-			//matches を使用してファイル名が「数字8桁.rcd」なのか判定します。
-			if ("売上集計システム_課題".matches("\\d{8}-rcd")) {
+			//matches を使用してファイル名(fileNameに入っている文字列)が「数字8桁.rcd」なのか判定します。
+			if (fileName.matches("\\d{8}\\rcd")) {
+				//okだったら、rcdfilesっていうファイル型のオブジェクトを入れる専用のリストに、files[i]っていうFile型オブジェクトを入れる
 				rcdFiles.add(files[i]);
 			}
-		  }
-
 		}
+
+
+//			  for(int i = 0; i < rcdFiles.size(); i++) {
+//			  if(rcdFiles())
+//				long fileSale = Long.parseLong(売上金額);
+//
+//				Long saleAmount = 売上金額を入れた.Map.get(支店コード) + long に変換した売上金額;
+//			}
+
+
+
+//		}
 
 
 		// 支店別集計ファイル書き込み処理
