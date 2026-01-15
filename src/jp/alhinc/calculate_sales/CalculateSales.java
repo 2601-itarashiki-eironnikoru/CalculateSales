@@ -58,18 +58,24 @@ public class CalculateSales {
 				rcdFiles.add(files[i]);
 			}
 		}
+		String line1 = null;
+		String line2 = null;
+		for(int i = 0; i < rcdFiles.size(); i++) {
+			BufferedReader filesNames = null;
+			try {
+				line1 = filesNames.readLine();
+				line2 = filesNames.readLine();
+			} catch(IOException toriaezu) {
+			 //今回は何もしない
+			}
+			long fileSale = Long.parseLong(line2);
+			Map<Long, Long> map = new HashMap<>();
+			Long saleAmount = map.get(line1) + fileSale;
+	    }
 
 
-//			  for(int i = 0; i < rcdFiles.size(); i++) {
-//			  if(rcdFiles())
-//				long fileSale = Long.parseLong(売上金額);
-//
-//				Long saleAmount = 売上金額を入れた.Map.get(支店コード) + long に変換した売上金額;
-//			}
 
 
-
-//		}
 
 
 		// 支店別集計ファイル書き込み処理
