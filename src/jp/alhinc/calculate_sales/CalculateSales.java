@@ -156,24 +156,20 @@ public class CalculateSales {
 	private static boolean writeFile(String path, String fileName, Map<String, String> branchNames, Map<String, Long> branchSales) {
 		// ※ここに書き込み処理を作成してください。(処理内容3-1)
 		BufferedWriter bw = null;
-
+		String storeNames = null;
+		Long storeSales = null;
 		try {
 			File file = new File(path, fileName);
 			FileWriter fw = new FileWriter(file);
 			bw = new BufferedWriter(fw);
-
-		//支店コードの数分（例えば、 branchNames　を入れたなら、 branchNamesのkeyの数分繰り返すぜ　と言っている）
-		for (String key : branchNames.keySet()) {
-//			書き出すぜ！なメソッド(key);
-			Map<String, String> storeNames = new HashMap<>();
-			Map<String, String> storeSales = new HashMap<>();
-			String storename = storeNames.get(key);
-			String storesale = storeSales.get(key);
-			fw.write(key + storename + storesale);
-			bw.newLine();
-		}
+			for (String key : branchNames.keySet()) {
+			  storeNames = branchNames.get(key);
+			  storeSales = branchSales.get(key);
+			  bw.write(key + "," + storeNames + "," + storeSales + "\r\n");
+			}
+			bw.close();
 		} catch(IOException e) {
-			System.out.println(UNKNOWN_ERROR);
+			System.out.println("なんか失敗");
 			return false;
 		} finally {
 			// ファイルを開いている場合
@@ -186,7 +182,42 @@ public class CalculateSales {
 					return false;
 				}
 			}
-		}
+		  }
+
+
+
+
+
+//		try {
+//			File file = new File(path, fileName);
+//			FileWriter fw = new FileWriter(file);
+//			bw = new BufferedWriter(fw);
+//
+//		//支店コードの数分（例えば、 branchNames　を入れたなら、 branchNamesのkeyの数分繰り返すぜ　と言っている）
+//		for (String key : branchNames.keySet()) {
+////			書き出すぜ！なメソッド(key);
+//			Map<String, String> storeNames = new HashMap<>();
+//			Map<String, String> storeSales = new HashMap<>();
+//			String storename = storeNames.get(key);
+//			String storesale = storeSales.get(key);
+//			fw.write(key + storename + storesale);
+//			bw.newLine();
+//		}
+//		} catch(IOException e) {
+//			System.out.println(UNKNOWN_ERROR);
+//			return false;
+//		} finally {
+//			// ファイルを開いている場合
+//			if(bw != null) {
+//				try {
+//					// ファイルを閉じる
+//					bw.close();
+//				} catch(IOException e) {
+//					System.out.println(UNKNOWN_ERROR);
+//					return false;
+//				}
+//			}
+//		}
 		return true;
 	}
 
