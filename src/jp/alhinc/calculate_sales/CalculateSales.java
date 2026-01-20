@@ -60,8 +60,6 @@ public class CalculateSales {
 				rcdFiles.add(files[i]);
 			}
 		}
-//		String line1 = null;
-//		String line2 = null;
 		BufferedReader br = null;
 		for(int i = 0; i < rcdFiles.size(); i++) {
 			try {
@@ -108,9 +106,11 @@ public class CalculateSales {
 	 */
 	private static boolean readFile(String path, String fileName, Map<String, String> branchNames, Map<String, Long> branchSales) {
 		BufferedReader br = null;
-
 		try {
 			File file = new File(path, fileName);
+			if(!file.exists()) {
+				System.out.println(FILE_NOT_EXIST);
+			}
 			FileReader fr = new FileReader(file);
 			br = new BufferedReader(fr);
 
@@ -119,10 +119,12 @@ public class CalculateSales {
 			while((line = br.readLine()) != null) {
 				// ※ここの読み込み処理を変更してください。(処理内容1-2)
 				String[] items = line.split(",");
-
 				//Mapに追加する２つの情報を、putの引数として指定します。
 				branchNames.put(items[0], items[1]);
 				branchSales.put(items[0], 0L);
+                if ((items.length != 2) || (!items[0].matches("[0-9]{3}"))) {
+					System.out.println(FILE_INVALID_FORMAT);
+				}
 			}
 
 		} catch(IOException e) {
