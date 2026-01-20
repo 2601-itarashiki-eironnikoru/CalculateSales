@@ -23,6 +23,7 @@ public class CalculateSales {
 	private static final String UNKNOWN_ERROR = "予期せぬエラーが発生しました";
 	private static final String FILE_NOT_EXIST = "支店定義ファイルが存在しません";
 	private static final String FILE_INVALID_FORMAT = "支店定義ファイルのフォーマットが不正です";
+	private static final String SALE_FILE_SERIAL_NUMBER = "売上ファイル名が連番になっていません";
 
 	/**
 	 * メインメソッド
@@ -58,6 +59,15 @@ public class CalculateSales {
 			if (fileName.matches("\\d{8}\\.rcd")) {
 				//okだったら、rcdfilesっていうファイル型のオブジェクトを入れる専用のリストに、files[i]っていうFile型オブジェクトを入れる
 				rcdFiles.add(files[i]);
+			}
+		}
+		for(int a = 0; a < rcdFiles.size() -1; a++) {
+			String currentFiles = files[a].getName();
+			int former = Integer.parseInt(currentFiles.substring(0, 8));
+			String nextfiles = files[a + 1].getName();
+			int latter = Integer.parseInt(nextfiles.substring(0, 8));
+			if((latter - former) != 1) {
+				System.out.println(SALE_FILE_SERIAL_NUMBER);
 			}
 		}
 		BufferedReader br = null;
