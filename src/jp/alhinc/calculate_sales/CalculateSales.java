@@ -60,16 +60,16 @@ public class CalculateSales {
 				rcdFiles.add(files[i]);
 			}
 		}
-		String line1 = null;
-		String line2 = null;
+//		String line1 = null;
+//		String line2 = null;
 		BufferedReader br = null;
 		for(int i = 0; i < rcdFiles.size(); i++) {
 			try {
 				File file = rcdFiles.get(i); //rcdFilesのリストの中から、i番目を取得する。
 				FileReader fr = new FileReader(file);
 				br = new BufferedReader(fr);
-				line1 = br.readLine(); //一行目の内容を「line1」に代入
-				line2 = br.readLine(); //二行目の内容を「line2」に代入
+				String line1 = br.readLine(); //一行目の内容を「line1」に代入
+				String line2 = br.readLine(); //二行目の内容を「line2」に代入
 				long fileSale = Long.parseLong(line2);
 				long saleAmount = branchSales.get(line1) + fileSale;
 				branchSales.put(line1, saleAmount);
@@ -121,9 +121,8 @@ public class CalculateSales {
 				String[] items = line.split(",");
 
 				//Mapに追加する２つの情報を、putの引数として指定します。
-				branchNames.put(items[0],items[1]);
-				branchSales.put(items[0],(long)0);
-				System.out.println(line);
+				branchNames.put(items[0], items[1]);
+				branchSales.put(items[0], 0L);
 			}
 
 		} catch(IOException e) {
@@ -156,18 +155,18 @@ public class CalculateSales {
 	private static boolean writeFile(String path, String fileName, Map<String, String> branchNames, Map<String, Long> branchSales) {
 		// ※ここに書き込み処理を作成してください。(処理内容3-1)
 		BufferedWriter bw = null;
-		String storeNames = null;
-		Long storeSales = null;
+//		String storeNames = null;
+//		Long storeSales = null;
 		try {
 			File file = new File(path, fileName);
 			FileWriter fw = new FileWriter(file);
 			bw = new BufferedWriter(fw);
 			for (String key : branchNames.keySet()) {
-			  storeNames = branchNames.get(key);
-			  storeSales = branchSales.get(key);
-			  bw.write(key + "," + storeNames + "," + storeSales + "\r\n");
+//			  storeNames = branchNames.get(key);
+//			  storeSales = branchSales.get(key);
+			  bw.write(key + "," + branchNames.get(key) + "," + branchSales.get(key));
+			  bw.newLine();
 			}
-			bw.close();
 		} catch(IOException e) {
 			System.out.println("なんか失敗");
 			return false;
@@ -182,42 +181,7 @@ public class CalculateSales {
 					return false;
 				}
 			}
-		  }
-
-
-
-
-
-//		try {
-//			File file = new File(path, fileName);
-//			FileWriter fw = new FileWriter(file);
-//			bw = new BufferedWriter(fw);
-//
-//		//支店コードの数分（例えば、 branchNames　を入れたなら、 branchNamesのkeyの数分繰り返すぜ　と言っている）
-//		for (String key : branchNames.keySet()) {
-////			書き出すぜ！なメソッド(key);
-//			Map<String, String> storeNames = new HashMap<>();
-//			Map<String, String> storeSales = new HashMap<>();
-//			String storename = storeNames.get(key);
-//			String storesale = storeSales.get(key);
-//			fw.write(key + storename + storesale);
-//			bw.newLine();
-//		}
-//		} catch(IOException e) {
-//			System.out.println(UNKNOWN_ERROR);
-//			return false;
-//		} finally {
-//			// ファイルを開いている場合
-//			if(bw != null) {
-//				try {
-//					// ファイルを閉じる
-//					bw.close();
-//				} catch(IOException e) {
-//					System.out.println(UNKNOWN_ERROR);
-//					return false;
-//				}
-//			}
-//		}
+		}
 		return true;
 	}
 
