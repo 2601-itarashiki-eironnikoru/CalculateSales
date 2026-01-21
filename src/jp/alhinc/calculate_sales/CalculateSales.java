@@ -24,6 +24,9 @@ public class CalculateSales {
 	private static final String FILE_NOT_EXIST = "支店定義ファイルが存在しません";
 	private static final String FILE_INVALID_FORMAT = "支店定義ファイルのフォーマットが不正です";
 	private static final String SALE_FILE_SERIAL_NUMBER = "売上ファイル名が連番になっていません";
+	private static final String TOTAL_AMOUNT_EXCEEDE_TEN_FIGURES = "合計金額が10桁を超えました";
+	private static final String CODE_INVALID_FORMAT = "の支店コードが不正です";
+	private static final String FILE_LINE_INVALID_FORMAT = "のフォーマットが不正です";
 
 	/**
 	 * メインメソッド
@@ -76,11 +79,27 @@ public class CalculateSales {
 				File file = rcdFiles.get(i); //rcdFilesのリストの中から、i番目を取得する。
 				FileReader fr = new FileReader(file);
 				br = new BufferedReader(fr);
-				String line1 = br.readLine(); //一行目の内容を「line1」に代入
-				String line2 = br.readLine(); //二行目の内容を「line2」に代入
-				long fileSale = Long.parseLong(line2);
-				long saleAmount = branchSales.get(line1) + fileSale;
-				branchSales.put(line1, saleAmount);
+				String line;
+				ArrayList<String> elementsList = new ArrayList<String>();
+				while((line = br.readLine()) != null) {
+					elementsList.add(line);
+					System.out.println(elementsList.size());
+				}
+				if(elementsList.size() != 2) {
+					System.out.println(elementsList + FILE_LINE_INVALID_FORMAT);
+				}
+				String storeCode = elementsList.get(0);
+				String streSale = elementsList.get(1);
+				long fileSale = Long.parseLong(streSale);
+				System.out.println(fileSale);
+				long saleAmount = branchSales.get(storeCode) + fileSale;
+				if(saleAmount >= 10000000000L) {
+					System.out.println(TOTAL_AMOUNT_EXCEEDE_TEN_FIGURES);
+				}
+				if(!branchNames.containsKey(storeCode)) {
+					System.out.println(storeCode + CODE_INVALID_FORMAT);
+				}
+				branchSales.put(storeCode, saleAmount);
 			} catch(IOException e) {
 				System.out.println(UNKNOWN_ERROR);
 				return;
@@ -167,20 +186,15 @@ public class CalculateSales {
 	private static boolean writeFile(String path, String fileName, Map<String, String> branchNames, Map<String, Long> branchSales) {
 		// ※ここに書き込み処理を作成してください。(処理内容3-1)
 		BufferedWriter bw = null;
-//		String storeNames = null;
-//		Long storeSales = null;
 		try {
 			File file = new File(path, fileName);
 			FileWriter fw = new FileWriter(file);
 			bw = new BufferedWriter(fw);
 			for (String key : branchNames.keySet()) {
-//			  storeNames = branchNames.get(key);
-//			  storeSales = branchSales.get(key);
 			  bw.write(key + "," + branchNames.get(key) + "," + branchSales.get(key));
 			  bw.newLine();
 			}
 		} catch(IOException e) {
-			System.out.println("なんか失敗");
 			return false;
 		} finally {
 			// ファイルを開いている場合
