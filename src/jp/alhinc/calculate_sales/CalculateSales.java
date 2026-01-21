@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,10 @@ public class CalculateSales {
 	 * @param コマンドライン引数
 	 */
 	public static void main(String[] args) {
+		//argsチェック
 		if(args.length != 1) {
 			System.out.println(UNKNOWN_ERROR);
+			return;
 		}
 		// 支店コードと支店名を保持するMap
 		Map<String, String> branchNames = new HashMap<>();
@@ -66,13 +69,15 @@ public class CalculateSales {
 				rcdFiles.add(files[i]);
 			}
 		}
-		for(int a = 0; a < rcdFiles.size() -1; a++) {
-			String currentFiles = files[a].getName();
-			int former = Integer.parseInt(currentFiles.substring(0, 8));
-			String nextfiles = files[a + 1].getName();
-			int latter = Integer.parseInt(nextfiles.substring(0, 8));
+
+		//連番チェック
+		Collections.sort(rcdFiles);
+		for(int i = 0; i < rcdFiles.size() -1; i++) {
+			int former = Integer.parseInt(files[i].getName().substring(0, 8));
+			int latter = Integer.parseInt(files[i + 1].getName().substring(0, 8));
 			if((latter - former) != 1) {
 				System.out.println(SALE_FILE_SERIAL_NUMBER);
+				return;
 			}
 		}
 		BufferedReader br = null;
@@ -81,28 +86,45 @@ public class CalculateSales {
 				File file = rcdFiles.get(i); //rcdFilesのリストの中から、i番目を取得する。
 				FileReader fr = new FileReader(file);
 				br = new BufferedReader(fr);
+
 				String line;
 				ArrayList<String> elementsList = new ArrayList<String>();
 				while((line = br.readLine()) != null) {
 					elementsList.add(line);
 				}
+
+				//行数チェック
 				if(elementsList.size() != 2) {
-					System.out.println(elementsList + FILE_LINE_INVALID_FORMAT);
+					System.out.println(rcdFiles.get(i).getName() + FILE_LINE_INVALID_FORMAT);
+					return;
 				}
-				String storeCode = elementsList.get(0);
-				String storeSale = elementsList.get(1);
-				if(!storeSale.matches("\\d{1,10}")) {
+
+				//支店コード存在チェック
+				String branchCode = elementsList.get(0);
+				if(!branchNames.containsKey(branchCode)) {
+					System.out.println(branchCode + CODE_INVALID_FORMAT);
+					return;
+				}
+
+				//売上金額の数字チェック
+				if(!elementsList.get(1).matches("^[0-9]+$")) {
 					System.out.println(UNKNOWN_ERROR);
+					return;
 				}
-				long fileSale = Long.parseLong(storeSale);
-				long saleAmount = branchSales.get(storeCode) + fileSale;
+
+				//足し算
+				long fileSale = Long.parseLong(elementsList.get(1));
+				long saleAmount = branchSales.get(branchCode) + fileSale;
+
+				//桁数チェック
 				if(saleAmount >= 10000000000L) {
 					System.out.println(TOTAL_AMOUNT_EXCEEDE_TEN_FIGURES);
+					return;
 				}
-				if(!branchNames.containsKey(storeCode)) {
-					System.out.println(storeCode + CODE_INVALID_FORMAT);
-				}
-				branchSales.put(storeCode, saleAmount);
+
+				//足し算し終わった結果をマップに格納(put)
+				branchSales.put(branchCode, saleAmount);
+
 			} catch(IOException e) {
 				System.out.println(UNKNOWN_ERROR);
 				return;
@@ -140,9 +162,13 @@ public class CalculateSales {
 		BufferedReader br = null;
 		try {
 			File file = new File(path, fileName);
+
+			//支店定義ファイル存在チェック
 			if(!file.exists()) {
 				System.out.println(FILE_NOT_EXIST);
+				return false;
 			}
+
 			FileReader fr = new FileReader(file);
 			br = new BufferedReader(fr);
 
@@ -152,13 +178,17 @@ public class CalculateSales {
 				// ※ここの読み込み処理を変更してください。(処理内容1-2)
 				String[] items = line.split(",");
 				//Mapに追加する２つの情報を、putの引数として指定します。
-				branchNames.put(items[0], items[1]);
-				branchSales.put(items[0], 0L);
+
+				//支店定義ファイルの行数チェック、支店コードのフォーマット(数字3桁)チェック
                 if ((items.length != 2) || (!items[0].matches("[0-9]{3}"))) {
 					System.out.println(FILE_INVALID_FORMAT);
+					return false;
 				}
-			}
 
+                //読んだ中身をmapに格納(put)
+				branchNames.put(items[0], items[1]);
+				branchSales.put(items[0], 0L);
+			}
 		} catch(IOException e) {
 			System.out.println(UNKNOWN_ERROR);
 			return false;
