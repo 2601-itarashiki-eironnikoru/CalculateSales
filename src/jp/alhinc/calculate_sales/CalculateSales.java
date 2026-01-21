@@ -83,7 +83,6 @@ public class CalculateSales {
 				ArrayList<String> elementsList = new ArrayList<String>();
 				while((line = br.readLine()) != null) {
 					elementsList.add(line);
-					System.out.println(elementsList.size());
 				}
 				if(elementsList.size() != 2) {
 					System.out.println(elementsList + FILE_LINE_INVALID_FORMAT);
@@ -91,7 +90,6 @@ public class CalculateSales {
 				String storeCode = elementsList.get(0);
 				String streSale = elementsList.get(1);
 				long fileSale = Long.parseLong(streSale);
-				System.out.println(fileSale);
 				long saleAmount = branchSales.get(storeCode) + fileSale;
 				if(saleAmount >= 10000000000L) {
 					System.out.println(TOTAL_AMOUNT_EXCEEDE_TEN_FIGURES);
