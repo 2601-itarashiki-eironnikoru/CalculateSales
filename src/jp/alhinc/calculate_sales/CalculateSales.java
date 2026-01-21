@@ -34,6 +34,9 @@ public class CalculateSales {
 	 * @param コマンドライン引数
 	 */
 	public static void main(String[] args) {
+		if(args.length != 1) {
+			System.out.println(UNKNOWN_ERROR);
+		}
 		// 支店コードと支店名を保持するMap
 		Map<String, String> branchNames = new HashMap<>();
 		// 支店コードと売上金額を保持するMap
@@ -57,9 +60,8 @@ public class CalculateSales {
 		for(int i = 0; i < files.length ; i++) {
 			//files[i].getName() でファイル名を取得,変数に代入してあげる事で、次の行で使える材料になる。
 			String fileName = files[i].getName();
-
 			//matches を使用してファイル名(fileNameに入っている文字列)が「数字8桁.rcd」なのか判定します。
-			if (fileName.matches("\\d{8}\\.rcd")) {
+			if (files[i].isFile() && fileName.matches("\\d{8}\\.rcd")) {
 				//okだったら、rcdfilesっていうファイル型のオブジェクトを入れる専用のリストに、files[i]っていうFile型オブジェクトを入れる
 				rcdFiles.add(files[i]);
 			}
@@ -88,8 +90,11 @@ public class CalculateSales {
 					System.out.println(elementsList + FILE_LINE_INVALID_FORMAT);
 				}
 				String storeCode = elementsList.get(0);
-				String streSale = elementsList.get(1);
-				long fileSale = Long.parseLong(streSale);
+				String storeSale = elementsList.get(1);
+				if(!storeSale.matches("\\d{1,10}")) {
+					System.out.println(UNKNOWN_ERROR);
+				}
+				long fileSale = Long.parseLong(storeSale);
 				long saleAmount = branchSales.get(storeCode) + fileSale;
 				if(saleAmount >= 10000000000L) {
 					System.out.println(TOTAL_AMOUNT_EXCEEDE_TEN_FIGURES);
